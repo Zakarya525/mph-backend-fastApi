@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 
 from pydantic import BaseModel
 
@@ -14,7 +14,7 @@ class StoreResponseSchema(BaseModel):
     id: str
     title: str
     description: Optional[str]
-    products: [ProductResponseSchema]
+    products: List[ProductResponseSchema]
 
 
 class StoreUpdateSchema(BaseModel):
