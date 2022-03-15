@@ -1,6 +1,6 @@
 import uuid
 
-from sqlalchemy import Column, ForeignKey, String, Text, UniqueConstraint
+from sqlalchemy import Column, ForeignKey, Integer, String, Text, UniqueConstraint
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
@@ -32,6 +32,7 @@ class Store(Base):
     description = Column(Text)
 
     user_id = Column(String(32), ForeignKey("users.id"), nullable=False)
+    products = relationship("Product", backref="user", cascade="all, delete-orphan", uselist=False)
 
     __table_args__ = (UniqueConstraint('title'),)
 
@@ -44,5 +45,31 @@ class Store(Base):
         return {
             "id": self.id,
             "title": self.title,
-            "description": self.description
+            "description": self.description,
+            "products": [product.to_json() for product in self.products.all()]
+        }
+
+
+class Product(Base):
+    __tablename__ = "products"
+
+    id = Column(String(32), primary_key=True, index=True)
+    name = Column(String(100), nullable=False)
+    description = Column(Text)
+    price = Column(Integer, nullable=False)
+
+    store_id = Column(String(32), ForeignKey("stores.id"), nullable=False)
+
+    def __init__(self, name, description, price):
+        self.id = str(uuid.uuid4().hex)
+        self.name = name
+        self.description = description
+        self.price = price
+
+    def to_json(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "description": self.description,
+            "price": self.price
         }
