@@ -2,7 +2,7 @@ from typing import List, Optional
 
 from pydantic import BaseModel
 
-from schemas.product import ProductResponseSchema
+from schemas.product import ProductResponseSchema, ProductUpdateSchema
 
 
 class CreateStoreSchema(BaseModel):
@@ -19,3 +19,4 @@ class StoreResponseSchema(BaseModel):
 
 class StoreUpdateSchema(BaseModel):
     description: str
+    products: Optional[List[ProductUpdateSchema]]
