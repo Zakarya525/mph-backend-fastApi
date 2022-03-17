@@ -24,6 +24,14 @@ class User(Base):
         self.email = email
         self.hash_password = hash_password
 
+    def to_json(self):
+        return {
+            "id": self.id,
+            "username": self.user_name,
+            "email": self.email,
+            "store": self.store.to_json()
+        }
+
 
 class Store(Base):
     __tablename__ = "stores"
