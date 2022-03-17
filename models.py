@@ -40,7 +40,7 @@ class Store(Base):
     description = Column(Text)
 
     user_id = Column(String(32), ForeignKey("users.id"), nullable=False)
-    products = relationship("Product", backref="user", cascade="all, delete-orphan", uselist=False)
+    products = relationship("Product", backref="store", cascade="all, delete-orphan", lazy="dynamic")
 
     __table_args__ = (UniqueConstraint('title'),)
 
@@ -54,7 +54,7 @@ class Store(Base):
             "id": self.id,
             "title": self.title,
             "description": self.description,
-            "products": [product.to_json() for product in self.products.all()] if self.products else []
+            "products": [product.to_json() for product in self.products.all()]
         }
 
 
