@@ -6,7 +6,7 @@ from api.product import product_router
 from api.store import store_router
 from api.user import user_router
 
-app = FastAPI()
+app = FastAPI(title="Mardan Peera House")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
