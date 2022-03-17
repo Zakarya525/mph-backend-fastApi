@@ -29,7 +29,7 @@ class User(Base):
             "id": self.id,
             "username": self.user_name,
             "email": self.email,
-            "store": self.store.to_json()
+            "store": self.store.to_json() if self.store else None
         }
 
 
@@ -54,7 +54,7 @@ class Store(Base):
             "id": self.id,
             "title": self.title,
             "description": self.description,
-            "products": [product.to_json() for product in self.products.all()]
+            "products": [product.to_json() for product in self.products.all()] if self.products else []
         }
 
 

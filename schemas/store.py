@@ -14,7 +14,7 @@ class StoreResponseSchema(BaseModel):
     id: str
     title: str
     description: Optional[str]
-    products: List[ProductResponseSchema]
+    products: Optional[List[ProductResponseSchema]]
 
 
 class StoreUpdateSchema(BaseModel):

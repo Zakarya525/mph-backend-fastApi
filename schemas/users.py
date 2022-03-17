@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import BaseModel
 
 from schemas.store import StoreResponseSchema
@@ -12,4 +14,4 @@ class RegisterUserSchema(BaseModel):
 class UserResponse(BaseModel):
     email: str
     username: str
-    store: StoreResponseSchema
+    store: Optional[StoreResponseSchema] = {}
