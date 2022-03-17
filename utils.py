@@ -69,7 +69,8 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
         token_data = TokenData(username=username)
     except JWTError:
         raise credentials_exception
-    user = get_user(user_name=token_data.username)
+    with get_db_session() as db_session:
+        user = db_session.query(User).filter_by(user_name=token_data.username).first()
     if user is None:
         raise credentials_exception
     return user
