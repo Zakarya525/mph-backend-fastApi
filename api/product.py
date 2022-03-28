@@ -24,6 +24,12 @@ def get_product(product_id: str, current_user: User = Depends(get_current_user))
 @product_router.post("", response_model=ProductResponseSchema)
 def create_product(product_data: AddProductSchema, current_user: User = Depends(get_current_user)):
     with get_db_session() as db_session:
+        if not current_user.store:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"User '{current_user.user_name}' no store created yet. Please create one..",
+            )
+
         existing_product = db_session.query(Product).filter_by(price=product_data.price,
                                                                description=product_data.description,
                                                                name=product_data.name).first()
@@ -34,6 +40,7 @@ def create_product(product_data: AddProductSchema, current_user: User = Depends(
             )
         product = Product(**product_data.dict())
         product.user = current_user
+        product.store = current_user.store
         db_session.add(product)
         db_session.commit()
 
