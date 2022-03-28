@@ -24,7 +24,7 @@ def get_product(product_id: str, current_user: User = Depends(get_current_user))
 @product_router.post("", response_model=ProductResponseSchema)
 def create_product(product_data: AddProductSchema, username: User = Depends(verify_token)):
     with get_db_session() as db_session:
-        user = db_session.query(User).filter_by(user_name=username.username).first()
+        user = db_session.query(User).filter_by(user_name=username).first()
         if not user.store:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
