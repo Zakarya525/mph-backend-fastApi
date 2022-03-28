@@ -4,7 +4,7 @@ from starlette import status
 from database import get_db_session
 from models import Product, User
 from schemas.product import AddProductSchema, ProductResponseSchema, ProductUpdateSchema
-from utils import get_current_user
+from utils import get_current_user, verify_token
 
 product_router = APIRouter(prefix="/products", tags=['Products'])
 
@@ -22,12 +22,13 @@ def get_product(product_id: str, current_user: User = Depends(get_current_user))
 
 
 @product_router.post("", response_model=ProductResponseSchema)
-def create_product(product_data: AddProductSchema, current_user: User = Depends(get_current_user)):
+def create_product(product_data: AddProductSchema, username: User = Depends(verify_token)):
     with get_db_session() as db_session:
-        if not current_user.store:
+        user = db_session.query(User).filter_by(user_name=username.username).first()
+        if not user.store:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"User '{current_user.user_name}' no store created yet. Please create one..",
+                detail=f"User '{user.user_name}' no store created yet. Please create one..",
             )
 
         existing_product = db_session.query(Product).filter_by(price=product_data.price,
@@ -36,11 +37,11 @@ def create_product(product_data: AddProductSchema, current_user: User = Depends(
         if existing_product:
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
-                detail=f"User '{current_user.user_name}' has already one product created.",
+                detail=f"User '{user.user_name}' has already one product created.",
             )
         product = Product(**product_data.dict())
-        product.user = current_user
-        product.store = current_user.store
+        product.user = user
+        product.store = user.store
         db_session.add(product)
         db_session.commit()
 
