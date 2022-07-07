@@ -16,7 +16,7 @@ sys.path.append(BASE_DIR)
 
 config = context.config
 
-config.set_main_option("sqlalchemy.url", "sqlite:///database.sqlite")
+config.set_main_option("sqlalchemy.url", "mysql+mysqldb://root:@localhost:3306/mobile_accessories")
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
